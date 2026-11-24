@@ -18,6 +18,7 @@ http.createServer((req , res) => {
   }else {
     status = 404;
     corpo = "Endereco nao encontrado.";
+    
   }
    console.log("Pedido recebido em: " + req.url);
     res.writeHead(status, {"content-type": "text/html; charset=utf-8"});
