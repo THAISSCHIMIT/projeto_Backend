@@ -1,5 +1,14 @@
 const http = require("node:http");
 
+const livros = [
+    {"É assim que acaba": "Colleen Hoover", preco: 39.90},
+    {"XYZ Bookstore": "Colleen", preco: 29.90},
+];
+
+console.log (livros);
+console.log ("Catálogo com X livros: " + livros.length);
+
+
 http.createServer((req , res) => {
     let corpo, status = 200;
 
@@ -8,7 +17,7 @@ http.createServer((req , res) => {
     corpo = "Bem-vindo a API da XYZ Bookstore!";
   }else if (req.url === "/livros") {
     console.log("Pedido recebido em: " + req.url);
-    corpo = "Rota de livros - em construcao.";
+    corpo = "Rota de livros - " + JSON.stringify(livros);
   }else if (req.url === "/carrinho") {
     console.log("Pedido recebido em: " + req.url);
     corpo = "Rota de carrinho - em construcao.";
@@ -17,11 +26,11 @@ http.createServer((req , res) => {
     corpo = "Rota de autores - em construcao.";
   }else {
     status = 404;
-    corpo = "Endereco nao encontrado.";
-    
+    corpo = JSON.stringify({ erro: "rota inexistente" })
+
   }
    console.log("Pedido recebido em: " + req.url);
-    res.writeHead(status, {"content-type": "text/html; charset=utf-8"});
+    res.writeHead(status, {"content-type": " application/json; charset=utf-8"});
     res.end("<h1>XYZ Bookstore</h1><p>" + corpo + "</p>");
   //console.log("Pedido recebido em: " + req.url);
 }).listen(3000);
