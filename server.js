@@ -8,6 +8,7 @@ const livros = [
     autor: "A. Writer",
     descricao: "Uma expedição que muda tudo.",
     preco: 39.9,
+    genero: "Aventura"
   },
   {
     id: "dave-cooking-book",
@@ -15,6 +16,7 @@ const livros = [
     autor: "D. Chef",
     descricao: "Receitas para quem queimou a primeira.",
     preco: 29.5,
+    genero: "Culinária"
   },
 ];
 
@@ -24,20 +26,39 @@ console.log ("Catálogo com X livros: " + livros.length);
 
 
 http.createServer((req , res) => {
+  const [caminho, query] = req.url.split("?");
+  const params = new URLSearchParams(query || "");
+
     let corpo, status = 200;
 
-   if (req.url === "/") {
+   if (caminho === "/") {
     console.log("Pedido recebido em: " + req.url);
     corpo = "Bem-vindo a API da XYZ Bookstore!";
 
-  }else if (req.url === "/livros") {
+  }else if (caminho === "/livros") {
     console.log("Pedido recebido em: " + req.url);
-    corpo = livros;
+    const autor = params.get("autor");
+    const genero = params.get("genero");
 
-  }else if (req.url.startsWith("/livros/")) {
+    if (autor) {
+        corpo = livros.filter(l =>
+            l.autor.toLowerCase().includes(autor.toLowerCase())
+        );
+
+    }  if (genero) {
+        corpo = corpo.filter(l =>
+            l.genero.toLowerCase().includes(genero.toLowerCase())
+        );
+
+
+    } else {
+        corpo = livros;
+    }
+
+  }else if (caminho.startsWith("/livros/")) {
     console.log("Pedido recebido em: " + req.url);
 
-    const id = req.url.split("/")[2];
+    const id = caminho.split("/")[2];
 
     const livroEncontrado = livros.find(livro => livro.id === id);
 
@@ -50,12 +71,12 @@ http.createServer((req , res) => {
   
 
 
-  }else if (req.url === "/carrinho") {
+  }else if (caminho === "/carrinho") {
     console.log("Pedido recebido em: " + req.url);
     corpo = "Rota de carrinho - em construcao.";
 
 
-  }else if (req.url === "/autores") {
+  }else if (caminho === "/autores") {
     console.log("Pedido recebido em: " + req.url);
     corpo = "Rota de autores - em construcao.";
 
